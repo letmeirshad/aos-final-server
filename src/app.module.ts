@@ -50,6 +50,7 @@ import { PaymentModule } from './payment/payment.module';
 import { CustomerPaymentModule } from './customer-payment/customer-payment.module';
 import { TokenManagerModule } from './token-manager/token-manager.module';
 import { CountryCodeModule } from './country-code/country-code.module';
+import { UpiPaymentModule } from './upi-payment/upi-payment.module';
 @Module({
   imports: [
     ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
@@ -97,7 +98,8 @@ import { CountryCodeModule } from './country-code/country-code.module';
     PaymentModule,
     CustomerPaymentModule,
     TokenManagerModule,
-    CountryCodeModule
+    CountryCodeModule,
+    UpiPaymentModule
   ],
   controllers: [],
   providers: [],

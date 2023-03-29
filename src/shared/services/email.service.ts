@@ -7,17 +7,24 @@ export class EmailService {
 
   async sendEmail(emailOptions) {
     const transporter = createTransport({
-      host: 'smtp.sendgrid.net',
-      port: 587,
-      auth: {
-        user: 'apikey',
-        pass: process.env.EMAIL_PWD,
-      },
-      // service: 'gmail',
+      //host: 'smtp.sendgrid.net',
+      host: 'smtp.gmail.com',
+      //port: 587,
+      port: 465,
       // auth: {
-      //   user: process.env.EMAIL_ID,
-      //   pass: process.env.EMAIL_PWD
-      // }
+      //   user: 'apikey',
+      //   pass: process.env.EMAIL_PWD,
+      // },
+      //service: 'gmail',
+
+      //host: 'smtp.gmail.com',
+      //port: "465",
+      
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_ID,
+        pass: process.env.EMAIL_PWD
+      }
     });
 
     transporter.sendMail(emailOptions, (err, info) => {

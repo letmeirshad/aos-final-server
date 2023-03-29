@@ -49,6 +49,7 @@
     "excel4node": "^1.7.2",
     "express-rate-limit": "^3.4.0",
     "express-session": "^1.16.2",
+    "fast-two-sms": "^3.0.0",
     "fs-extra": "^8.1.0",
     "helmet": "^3.16.0",
     "moment": "^2.24.0",

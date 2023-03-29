@@ -111,6 +111,9 @@ export class CustomerController {
       const initialData = await this.customerService.getInitialSetup(req.id);
       return fromShared.found(res, initialData);
     } catch (error) {
+
+      console.log(error);
+      
       throw new BadRequestException('Error in getting initial data');
     }
   }

@@ -48,6 +48,7 @@ import { ChatModule } from './chat/chat.module';
 import { PaymentModule } from './payment/payment.module';
 import { CustomerPaymentModule } from './customer-payment/customer-payment.module';
 import { CountryCodeModule } from './country-code/country-code.module';
+import { UpiPaymentModule } from './upi-payment/upi-payment.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     // cors:{
@@ -171,7 +172,8 @@ async function bootstrap() {
         ChatModule,
         PaymentModule,
         CustomerPaymentModule,
-        CountryCodeModule
+        CountryCodeModule,
+        UpiPaymentModule
       ],
     });
     SwaggerModule.setup('api', app, adminDocument);

@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-
 export enum CustPaymentStatus {
   SUCCESS='SUCCESS',
   CANCELLED='CANCELLED',

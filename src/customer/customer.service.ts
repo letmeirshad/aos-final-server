@@ -336,17 +336,21 @@ export class CustomerService {
       'max_recharge_amount',
     );
 
-    const isInApproval = await this.configService.findByKey(
-      'is_in_google_approval',
-    );
+    //Un-Comment It Later, For Now Do By ByPass, By Faiz, --At 06/11/2022
+
+    // const isInApproval = await this.configService.findByKey(
+    //   'is_in_google_approval',
+    // );
+    // let setInApproval = false;
+    // if (isInApproval) {
+    //   if (parseInt(isInApproval.config_value) > 0) {
+    //     setInApproval = true;
+    //   } else {
+    //     setInApproval = false;
+    //   }
+    // }
+
     let setInApproval = false;
-    if (isInApproval) {
-      if (parseInt(isInApproval.config_value) > 0) {
-        setInApproval = true;
-      } else {
-        setInApproval = false;
-      }
-    }
 
     await this.customerRepository
       .update(customer.cust_id, { bonus: 0 })

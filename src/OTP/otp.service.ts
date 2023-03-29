@@ -7,7 +7,8 @@ import { Customer } from '../customer/customer.entity';
 import * as fromShared from './../shared';
 import { Admin } from '../admin/admin.entity';
 import { classToPlain } from 'class-transformer';
-import { Configuration} from '../shared/utilities/configuration';
+import { Configuration } from '../shared/utilities/configuration';
+//import { Fast2Sms } from 'fast-two-sms';
 @Injectable()
 export class OTPService {
   constructor(
@@ -17,11 +18,9 @@ export class OTPService {
     private readonly customerRepository: Repository<Customer>,
     @InjectRepository(Admin)
     private readonly adminRepository: Repository<Admin>,
-  // private readonly smsService: fromShared.SMSService,
-  private readonly emailService: fromShared.EmailService
-  )
-
-  {}
+    // private readonly smsService: fromShared.SMSService,
+    private readonly emailService: fromShared.EmailService
+  ) { }
 
   async createCust(otp: OTPDTO) {
     const customer = await this.customerRepository.findOneOrFail({
@@ -36,28 +35,35 @@ export class OTPService {
     newOTP.customer = customer;
     const savedOTP = await this.otpRepository.save(newOTP);
 
-    if(customer.email){
-    const mailOptions = {
-      from: process.env.EMAIL_ID,
-      to: customer.email,
-      subject: 'OTP Generated - Pinnacle Matka',
-      html: `<div>
-      <p>Hi ${customer.first_name} ${customer.last_name},</p>
-      <br/>
-      <p>Your One Time Password is <b>${newOTP.otp_value}</b> and is valid for ${Configuration.OTP_EXPIRY_TIME} minutes.</p>
-      <br/>
-      <p>This email is automatically generated.</p>
-      <p>Please do not reply to this email.</p>
-      <br/>
-      <p>Please do not share this OTP with anyone. Sharing thses details can lead to unauthorised access to your account</p>
-      <br/>
-      <p>Regards,</p>
-      <p>Pinnacle Matka </p>
-      </div>`,
-    }
-    await this.emailService.sendEmail(mailOptions).catch(e => { throw fromShared.compose('Error while sending Email')});
-  }
-   
+    //Added By Faiz, --At 25/11/2022
+    // if (customer.mobile_no) {
+    //   const smsres = await Fast2Sms.sendMessage({ authorization: process.env.SMS_API_KEY, message: '1000', numbers: [customer.mobile_no] })
+    // }
+
+    //Commented By Faiz, --At 25/11/2022
+
+    //   if(customer.email){
+    //   const mailOptions = {
+    //     from: process.env.EMAIL_ID,
+    //     to: customer.email,
+    //     subject: 'OTP Generated - Pinnacle Matka',
+    //     html: `<div>
+    //     <p>Hi ${customer.first_name} ${customer.last_name},</p>
+    //     <br/>
+    //     <p>Your One Time Password is <b>${newOTP.otp_value}</b> and is valid for ${Configuration.OTP_EXPIRY_TIME} minutes.</p>
+    //     <br/>
+    //     <p>This email is automatically generated.</p>
+    //     <p>Please do not reply to this email.</p>
+    //     <br/>
+    //     <p>Please do not share this OTP with anyone. Sharing thses details can lead to unauthorised access to your account</p>
+    //     <br/>
+    //     <p>Regards,</p>
+    //     <p>Pinnacle Matka </p>
+    //     </div>`,
+    //   }
+    //   await this.emailService.sendEmail(mailOptions).catch(e => { throw fromShared.compose('Error while sending Email')});
+    // }
+
   }
 
   async createAdmin(otp: OTPDTO) {
@@ -80,34 +86,48 @@ export class OTPService {
         mobile_no: otpValidation.mobile_no,
       },
     });
-    const OTP = await this.otpRepository.findOneOrFail({
+
+    //Un-Comment It Later, For Now Do By ByPass, By Faiz, --At 06/11/2022
+
+    // const OTP = await this.otpRepository.findOneOrFail({
+    //   where: {
+    //     otp_value: otpValidation.otp_value,
+    //     cust_id: customer.cust_id,
+    //   },
+    // });
+
+    // if (!fromShared.Time.validateOTPExpirationTime(OTP.otp_expiration)) {
+    //    await this.customerRepository
+    //     .update(customer.cust_id, { is_verified: true })
+    //     .catch(e => {
+    //       throw fromShared.compose('error in verification');
+    //     });
+
+    //     const upatedCustomer = await  this.customerRepository.findOneOrFail({
+    //       where: {
+    //         mobile_no: otpValidation.mobile_no,
+    //       },
+    //     });
+
+    //   return classToPlain(upatedCustomer);
+    // } 
+    // else {
+    //    throw 'OTP Expired';
+    // }   
+
+    await this.customerRepository
+      .update(customer.cust_id, { is_verified: true })
+      .catch(e => {
+        throw fromShared.compose('error in verification');
+      });
+
+    const upatedCustomer = await this.customerRepository.findOneOrFail({
       where: {
-        otp_value: otpValidation.otp_value,
-        cust_id: customer.cust_id,
+        mobile_no: otpValidation.mobile_no,
       },
     });
 
-    if (!fromShared.Time.validateOTPExpirationTime(OTP.otp_expiration)) {
-       await this.customerRepository
-        .update(customer.cust_id, { is_verified: true })
-        .catch(e => {
-          throw fromShared.compose('error in verification');
-        });
-
-        const upatedCustomer = await  this.customerRepository.findOneOrFail({
-          where: {
-            mobile_no: otpValidation.mobile_no,
-          },
-        });
-        
-      return classToPlain(upatedCustomer);
-    } else {
-       throw 'OTP Expired';
-    } 
-
-
-
-    
+    return classToPlain(upatedCustomer);
   }
 
   async validateAdmin(otpValidation: ValidateOTP) {
