@@ -39,12 +39,14 @@ export class CustomerDTO {
   password: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  //@IsNotEmpty()
+  @IsOptional()
   @IsString()
   dob: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  //@IsNotEmpty()
+  @IsOptional()
   @IsEmail()
   email: string;
 
